@@ -88,8 +88,8 @@ export default function Recruiting() {
           <h1 className="text-3xl font-bold text-gray-800 mb-2">
             Project Green Leaf
           </h1>
-          <h2 className="text-lg text-gray-600">
-            Welcome Aboard
+          <h2 className="text-sm text-gray-600">
+          Your information will only be used to contact you about Project Green Leaf recruitment and will never be shared
           </h2>
         </div>
 
