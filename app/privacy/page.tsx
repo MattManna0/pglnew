@@ -113,9 +113,7 @@ export default function Privacy() {
             </p>
             <div className="bg-gray-50 p-4 rounded-md text-gray-600">
               <p><strong>Project Green Leaf Research Team</strong></p>
-              <p>Email: [Contact Email]</p>
-              <p>Phone: [Contact Phone]</p>
-              <p>Address: [Institution Address]</p>
+              <p>Email: [MattManna0@gmail.com]</p>
             </div>
           </section>
 
