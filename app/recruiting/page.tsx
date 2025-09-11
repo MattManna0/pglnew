@@ -154,6 +154,15 @@ export default function Recruiting() {
           </button>
         </form>
 
+        <div className="mt-4 text-center">
+          <a
+            href="/privacy"
+            className="text-sm text-gray-600 hover:text-green-600 underline transition-colors"
+          >
+            Privacy Policy
+          </a>
+        </div>
+
         {message && (
           <div className={`mt-4 p-3 rounded-md text-sm ${
             message.includes('successfully') 
