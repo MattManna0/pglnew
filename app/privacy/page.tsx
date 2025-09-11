@@ -112,7 +112,7 @@ export default function Privacy() {
               please contact the Project Green Leaf research team:
             </p>
             <div className="bg-gray-50 p-4 rounded-md text-gray-600">
-              <p><strong>Project Green Leaf Research Team</strong></p>
+              <p><strong>Project Green Leaf Research Contact</strong></p>
               <p>Email: [MattManna0@gmail.com]</p>
             </div>
           </section>
