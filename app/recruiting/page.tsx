@@ -2,6 +2,7 @@
 
 import Image from 'next/image';
 import { useState } from 'react';
+import '../styles/recruiting.css';
 
 export default function Recruiting() {
   const [formData, setFormData] = useState({
@@ -74,28 +75,28 @@ export default function Recruiting() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-green-50 to-white flex items-center justify-center p-4">
-      <div className="max-w-md w-full bg-white rounded-lg shadow-lg p-8">
-        <div className="text-center mb-8">
+    <div className="recruiting-container">
+      <div className="recruiting-form-wrapper">
+        <div className="recruiting-header">
           <Image
             src="/greenleaf.png"
             alt="Green Leaf Logo"
             width={80}
             height={80}
-            className="mx-auto mb-4"
+            className="recruiting-logo"
             priority
           />
-          <h1 className="text-3xl font-bold text-gray-800 mb-2">
+          <h1 className="recruiting-title">
             Project Green Leaf
           </h1>
-          <h2 className="text-sm text-gray-600">
+          <h2 className="recruiting-subtitle">
           Your information will only be used to contact you about Project Green Leaf recruitment and will never be shared
           </h2>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <div>
-            <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
+        <form onSubmit={handleSubmit} className="recruiting-form">
+          <div className="recruiting-field-group">
+            <label htmlFor="name" className="recruiting-label">
               Full Name
             </label>
             <input
@@ -104,15 +105,15 @@ export default function Recruiting() {
               name="name"
               value={formData.name}
               onChange={handleInputChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+              className="recruiting-input"
               placeholder="Enter your full name"
               maxLength={100}
               required
             />
           </div>
 
-          <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+          <div className="recruiting-field-group">
+            <label htmlFor="email" className="recruiting-label">
               Email Address
             </label>
             <input
@@ -121,15 +122,15 @@ export default function Recruiting() {
               name="email"
               value={formData.email}
               onChange={handleInputChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+              className="recruiting-input"
               placeholder="Enter your email address"
               maxLength={100}
               required
             />
           </div>
 
-          <div>
-            <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-2">
+          <div className="recruiting-field-group">
+            <label htmlFor="phone" className="recruiting-label">
               Phone Number
             </label>
             <input
@@ -138,7 +139,7 @@ export default function Recruiting() {
               name="phone"
               value={formData.phone}
               onChange={handleInputChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+              className="recruiting-input"
               placeholder="Enter your phone number"
               maxLength={20}
               required
@@ -148,26 +149,26 @@ export default function Recruiting() {
           <button
             type="submit"
             disabled={isSubmitting}
-            className="w-full bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            className="recruiting-submit-button"
           >
             {isSubmitting ? 'Submitting...' : 'Submit Application'}
           </button>
         </form>
 
-        <div className="mt-4 text-center">
+        <div className="recruiting-privacy-link-wrapper">
           <a
             href="/privacy"
-            className="text-sm text-gray-600 hover:text-green-600 underline transition-colors"
+            className="recruiting-privacy-link"
           >
             Privacy Policy
           </a>
         </div>
 
         {message && (
-          <div className={`mt-4 p-3 rounded-md text-sm ${
+          <div className={`recruiting-message ${
             message.includes('successfully') 
-              ? 'bg-green-100 text-green-700' 
-              : 'bg-red-100 text-red-700'
+              ? 'recruiting-message-success' 
+              : 'recruiting-message-error'
           }`}>
             {message}
           </div>
