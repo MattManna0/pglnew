@@ -6,6 +6,7 @@ import './styles/login.css';
 
 export default function Login() {
   const [formData, setFormData] = useState({
+    role: 'admin',
     username: '',
     password: ''
   });
@@ -13,7 +14,7 @@ export default function Login() {
   const [message, setMessage] = useState('');
   const [attemptCount, setAttemptCount] = useState(0);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
@@ -55,9 +56,13 @@ export default function Login() {
       if (response.ok) {
         setMessage('Login successful!');
         setAttemptCount(0);
-        // Redirect or handle successful login
+        // Redirect based on role
         setTimeout(() => {
-          window.location.href = '/recruiting';
+          if (formData.role === 'admin') {
+            window.location.href = '/admin-home';
+          } else {
+            window.location.href = '/recruiting';
+          }
         }, 1000);
       } else {
         setMessage(data.error || 'Login failed');
@@ -92,6 +97,22 @@ export default function Login() {
         </div>
 
         <form onSubmit={handleSubmit} className="login-form">
+          <div className="login-field-group">
+            <label htmlFor="role" className="login-label">
+              Role
+            </label>
+            <select
+              id="role"
+              name="role"
+              value={formData.role}
+              onChange={handleInputChange}
+              className="login-role-select"
+              required
+            >
+              <option value="admin">Admin</option>
+            </select>
+          </div>
+
           <div className="login-field-group">
             <label htmlFor="username" className="login-label">
               Username

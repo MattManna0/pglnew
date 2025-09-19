@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { MongoClient } from 'mongodb';
 import bcrypt from 'bcryptjs';
 
 // Request size limits
@@ -69,15 +70,15 @@ function validateLoginInput(data: unknown) {
     throw new Error('Invalid input data');
   }
 
-  const { username, password } = data as { username: string; password: string };
+  const { role, username, password } = data as { role: string; username: string; password: string };
 
   // Validate required fields
-  if (!username || !password) {
-    throw new Error('Username and password are required');
+  if (!role || !username || !password) {
+    throw new Error('Role, username and password are required');
   }
 
   // Type validation
-  if (typeof username !== 'string' || typeof password !== 'string') {
+  if (typeof role !== 'string' || typeof username !== 'string' || typeof password !== 'string') {
     throw new Error('Invalid field types');
   }
 
@@ -93,7 +94,8 @@ function validateLoginInput(data: unknown) {
   }
 
   return {
-    username: username.trim().toLowerCase(),
+    role: role.trim().toLowerCase(),
+    username: username.trim(),
     password: password
   };
 }
@@ -144,23 +146,57 @@ export async function POST(request: NextRequest) {
     }
 
     // Validate input
-    const { username, password } = validateLoginInput(body);
-
-    // Initialize users if not done yet
-    await initializeUsers();
+    const { role, username, password } = validateLoginInput(body);
 
     // Simulate processing delay to prevent timing attacks
     const startTime = Date.now();
     
-    // Check if user exists and verify password
-    const hashedPassword = users.get(username);
     let isValid = false;
-    
-    if (hashedPassword) {
-      isValid = await bcrypt.compare(password, hashedPassword);
+
+    if (role === 'admin') {
+      // Check admin credentials from MongoDB
+      const mongoUrl = process.env.MONGO_LOGIN;
+      const mongoDatabase = process.env.MONGO_DATABASE;
+      const mongoCollection = process.env.MONGO_COLLECTION;
+
+      if (!mongoUrl || !mongoDatabase || !mongoCollection) {
+        console.error('MongoDB environment variables not set');
+        return NextResponse.json(
+          { error: 'Server configuration error' },
+          { status: 500 }
+        );
+      }
+
+      const client = new MongoClient(mongoUrl);
+      
+      try {
+        await client.connect();
+        const db = client.db(mongoDatabase);
+        const collection = db.collection(mongoCollection);
+
+        // Find admin user
+        const adminUser = await collection.findOne({ username, type: 'admin' });
+        
+        if (adminUser && adminUser.password) {
+          isValid = await bcrypt.compare(password, adminUser.password);
+        } else {
+          // Perform dummy hash comparison to prevent username enumeration
+          await bcrypt.compare(password, '$2a$10$dummy.hash.to.prevent.timing.attacks');
+        }
+      } finally {
+        await client.close();
+      }
     } else {
-      // Perform dummy hash comparison to prevent username enumeration
-      await bcrypt.compare(password, '$2a$10$dummy.hash.to.prevent.timing.attacks');
+      // For other roles, use the hardcoded users (fallback)
+      await initializeUsers();
+      const hashedPassword = users.get(username);
+      
+      if (hashedPassword) {
+        isValid = await bcrypt.compare(password, hashedPassword);
+      } else {
+        // Perform dummy hash comparison to prevent username enumeration
+        await bcrypt.compare(password, '$2a$10$dummy.hash.to.prevent.timing.attacks');
+      }
     }
 
     // Ensure minimum processing time (prevent timing attacks)
@@ -185,7 +221,7 @@ export async function POST(request: NextRequest) {
     const response = NextResponse.json(
       { 
         message: 'Login successful',
-        user: { username }
+        user: { username, role }
       },
       { status: 200 }
     );
