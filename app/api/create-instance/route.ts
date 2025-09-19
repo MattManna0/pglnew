@@ -8,13 +8,13 @@ const MAX_REQUEST_SIZE = 256; // Small request for this endpoint
 // Rate limiting for instance creation
 const createAttempts = new Map();
 const MAX_CREATE_ATTEMPTS = 3;
-const LOCKOUT_DURATION = 60 * 60 * 1000; // 1 hour
+const LOCKOUT_DURATION = 0; // 1 hour
 
 function checkRateLimit(ip: string): boolean {
   const now = Date.now();
   const key = `create_${ip}`;
   
-  if (!createAttempts.has(key)) {
+  if (!createAttempts.has(key)) {   
     createAttempts.set(key, { count: 1, resetTime: now + LOCKOUT_DURATION });
     return true;
   }
@@ -77,6 +77,7 @@ export async function POST(request: NextRequest) {
     const mongoUrl = process.env.MONGO_LOGIN;
     const mongoDatabase = process.env.MONGO_DATABASE;
     const mongoCollection = process.env.MONGO_COLLECTION;
+
     if (!mongoUrl || !mongoDatabase || !mongoCollection) {
       console.error('MongoDB environment variables not set');
       return NextResponse.json(
