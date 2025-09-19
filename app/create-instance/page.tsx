@@ -67,21 +67,27 @@ export default function CreateInstance() {
               {isGenerating ? 'Generating...' : 'Generate Instance'}
             </button>
           ) : (
-            <div className="create-instance-credentials">
-              <div className="create-instance-warning">
-                This is important. Write this down.
+            <>
+              <div className="create-instance-credentials">
+                <div className="create-instance-warning">
+                  This is important. Write this down.
+                </div>
+                
+                <div className="create-instance-credential-item">
+                  <div className="create-instance-credential-label">Username</div>
+                  <div className="create-instance-credential-value">{credentials.username}</div>
+                </div>
+                
+                <div className="create-instance-credential-item">
+                  <div className="create-instance-credential-label">Password</div>
+                  <div className="create-instance-credential-value">{credentials.password}</div>
+                </div>
               </div>
               
-              <div className="create-instance-credential-item">
-                <div className="create-instance-credential-label">Username</div>
-                <div className="create-instance-credential-value">{credentials.username}</div>
+              <div className="create-instance-back-link">
+                <a href="/">back to login</a>
               </div>
-              
-              <div className="create-instance-credential-item">
-                <div className="create-instance-credential-label">Password</div>
-                <div className="create-instance-credential-value">{credentials.password}</div>
-              </div>
-            </div>
+            </>
           )}
 
           {error && (
