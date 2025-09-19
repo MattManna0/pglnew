@@ -116,7 +116,7 @@ export default function TargetingSetup() {
 
         <div className="targeting-setup-auxiliary-section">
           <h3 className="targeting-setup-question-title">
-            Which of the following auxiliary data categories do you require?
+            Which of the following auxiliary data categories will you require?
           </h3>
           
           <div className="targeting-setup-auxiliary-options">
