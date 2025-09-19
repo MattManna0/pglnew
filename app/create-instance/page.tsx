@@ -96,6 +96,10 @@ export default function CreateInstance() {
               {error}
             </div>
           )}
+
+          <div className="create-instance-login-link">
+            <a href="/">back to login</a>
+          </div>
         </div>
       </div>
     </div>

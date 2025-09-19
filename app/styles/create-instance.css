@@ -124,6 +124,22 @@
   border: 1px solid #fecaca;
 }
 
+.create-instance-login-link {
+  margin-top: 1.5rem;
+  text-align: center;
+}
+
+.create-instance-login-link a {
+  font-size: 0.875rem;
+  color: #4b5563;
+  text-decoration: underline;
+  transition: color 0.15s ease-in-out;
+}
+
+.create-instance-login-link a:hover {
+  color: #059669;
+}
+
 .create-instance-back-link {
   margin-top: 1.5rem;
   text-align: center;
