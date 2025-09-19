@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 export function middleware(request: NextRequest) {
-  // Check if accessing admin-home
-  if (request.nextUrl.pathname.startsWith('/admin-home')) {
+  // Check if accessing protected admin routes
+  if (request.nextUrl.pathname.startsWith('/admin-home') || 
+      request.nextUrl.pathname.startsWith('/general-setup')) {
     // Check for session cookie
     const sessionCookie = request.cookies.get('session');
     
@@ -16,5 +17,5 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/admin-home/:path*']
+  matcher: ['/admin-home/:path*', '/general-setup/:path*']
 };

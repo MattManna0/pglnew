@@ -12,8 +12,12 @@ export default function AdminHome() {
   };
 
   const handleSectionClick = (section: string) => {
-    // Do nothing for now as requested
-    console.log(`Clicked on ${section} section`);
+    if (section === 'general-setup') {
+      window.location.href = '/general-setup';
+    } else {
+      // Do nothing for other sections for now
+      console.log(`Clicked on ${section} section`);
+    }
   };
 
   return (
