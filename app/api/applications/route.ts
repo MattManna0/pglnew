@@ -151,8 +151,14 @@ export async function POST(request: NextRequest) {
     
     try {
       await client.connect();
-      const db = client.db(mongoDatabase);
-      const collection = db.collection(mongoCollectionName);
+      if (!mongoDatabase) {
+        throw new Error('MONGO_DATABASE environment variable not set');
+      }
+      if (!mongoCollectionName) {
+        throw new Error('MONGO_APPLICATIONS_COLLECTION environment variable not set');
+      }
+      const db = client.db(mongoDatabase!);
+      const collection = db.collection(mongoCollectionName!);
 
       // Check for duplicate email (basic duplicate prevention)
       const existingApplication = await collection.findOne({ email: validatedData.email });
