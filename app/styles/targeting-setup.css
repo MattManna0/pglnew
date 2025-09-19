@@ -248,3 +248,79 @@
   opacity: 0.5;
   cursor: not-allowed;
 }
+
+.targeting-setup-timing-section {
+  margin-top: 3rem;
+  padding-top: 2rem;
+  border-top: 1px solid #e5e7eb;
+}
+
+.targeting-setup-timing-warning {
+  font-size: 0.875rem;
+  color: #dc2626;
+  font-style: italic;
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.targeting-setup-timing-container {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+}
+
+@media (min-width: 768px) {
+  .targeting-setup-timing-container {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.targeting-setup-timing-group {
+  background-color: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+  padding: 1.5rem;
+}
+
+.targeting-setup-timing-title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.targeting-setup-timing-inputs {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.targeting-setup-timing-input-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.targeting-setup-timing-label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #374151;
+  margin-bottom: 0.5rem;
+}
+
+.targeting-setup-timing-input {
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.375rem;
+  outline: none;
+  transition: all 0.15s ease-in-out;
+  font-size: 1rem;
+  color: #1f2937;
+  background-color: #ffffff;
+}
+
+.targeting-setup-timing-input:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px #10b981;
+  border-color: transparent;
+}

@@ -8,6 +8,12 @@ export default function TargetingSetup() {
   const [selectedUploader, setSelectedUploader] = useState<'me' | 'participants' | null>(null);
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [customGuidelines, setCustomGuidelines] = useState<string[]>(['']);
+  const [startDate, setStartDate] = useState('');
+  const [startTime, setStartTime] = useState('');
+  const [startTimezone, setStartTimezone] = useState('');
+  const [endDate, setEndDate] = useState('');
+  const [endTime, setEndTime] = useState('');
+  const [endTimezone, setEndTimezone] = useState('');
 
   const handleLogout = () => {
     // Clear session cookie
@@ -168,6 +174,103 @@ export default function TargetingSetup() {
               </button>
             </div>
           )}
+        </div>
+
+        <div className="targeting-setup-timing-section">
+          <h3 className="targeting-setup-question-title">
+            When will the targeting phase start and end?
+          </h3>
+          <p className="targeting-setup-timing-warning">
+            You will not be able to modify this after the targeting phase starts. Please choose wisely.
+          </p>
+          
+          <div className="targeting-setup-timing-container">
+            <div className="targeting-setup-timing-group">
+              <h4 className="targeting-setup-timing-title">Start</h4>
+              <div className="targeting-setup-timing-inputs">
+                <div className="targeting-setup-timing-input-group">
+                  <label className="targeting-setup-timing-label">Date</label>
+                  <input
+                    type="date"
+                    value={startDate}
+                    onChange={(e) => setStartDate(e.target.value)}
+                    className="targeting-setup-timing-input"
+                  />
+                </div>
+                <div className="targeting-setup-timing-input-group">
+                  <label className="targeting-setup-timing-label">Time</label>
+                  <input
+                    type="time"
+                    value={startTime}
+                    onChange={(e) => setStartTime(e.target.value)}
+                    className="targeting-setup-timing-input"
+                  />
+                </div>
+                <div className="targeting-setup-timing-input-group">
+                  <label className="targeting-setup-timing-label">Timezone</label>
+                  <select
+                    value={startTimezone}
+                    onChange={(e) => setStartTimezone(e.target.value)}
+                    className="targeting-setup-timing-input"
+                  >
+                    <option value="">Select timezone</option>
+                    <option value="UTC">UTC</option>
+                    <option value="America/New_York">Eastern Time (ET)</option>
+                    <option value="America/Chicago">Central Time (CT)</option>
+                    <option value="America/Denver">Mountain Time (MT)</option>
+                    <option value="America/Los_Angeles">Pacific Time (PT)</option>
+                    <option value="Europe/London">GMT (London)</option>
+                    <option value="Europe/Paris">CET (Paris)</option>
+                    <option value="Asia/Tokyo">JST (Tokyo)</option>
+                    <option value="Australia/Sydney">AEST (Sydney)</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <div className="targeting-setup-timing-group">
+              <h4 className="targeting-setup-timing-title">End</h4>
+              <div className="targeting-setup-timing-inputs">
+                <div className="targeting-setup-timing-input-group">
+                  <label className="targeting-setup-timing-label">Date</label>
+                  <input
+                    type="date"
+                    value={endDate}
+                    onChange={(e) => setEndDate(e.target.value)}
+                    className="targeting-setup-timing-input"
+                  />
+                </div>
+                <div className="targeting-setup-timing-input-group">
+                  <label className="targeting-setup-timing-label">Time</label>
+                  <input
+                    type="time"
+                    value={endTime}
+                    onChange={(e) => setEndTime(e.target.value)}
+                    className="targeting-setup-timing-input"
+                  />
+                </div>
+                <div className="targeting-setup-timing-input-group">
+                  <label className="targeting-setup-timing-label">Timezone</label>
+                  <select
+                    value={endTimezone}
+                    onChange={(e) => setEndTimezone(e.target.value)}
+                    className="targeting-setup-timing-input"
+                  >
+                    <option value="">Select timezone</option>
+                    <option value="UTC">UTC</option>
+                    <option value="America/New_York">Eastern Time (ET)</option>
+                    <option value="America/Chicago">Central Time (CT)</option>
+                    <option value="America/Denver">Mountain Time (MT)</option>
+                    <option value="America/Los_Angeles">Pacific Time (PT)</option>
+                    <option value="Europe/London">GMT (London)</option>
+                    <option value="Europe/Paris">CET (Paris)</option>
+                    <option value="Asia/Tokyo">JST (Tokyo)</option>
+                    <option value="Australia/Sydney">AEST (Sydney)</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
