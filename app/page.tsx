@@ -139,10 +139,10 @@ export default function Login() {
 
         <div className="login-footer">
           <a
-            href="/recruiting"
+            href="/create-instance"
             className="login-footer-link"
           >
-            Apply for Project Green Leaf
+            Create Instance
           </a>
         </div>
 
