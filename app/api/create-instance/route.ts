@@ -7,8 +7,8 @@ const MAX_REQUEST_SIZE = 256; // Small request for this endpoint
 
 // Rate limiting for instance creation
 const createAttempts = new Map();
-const MAX_CREATE_ATTEMPTS = 3;
-const LOCKOUT_DURATION = 0; // 1 hour
+const MAX_CREATE_ATTEMPTS = 5;
+const LOCKOUT_DURATION = 60 * 60 * 1000; // 1 hour
 
 function checkRateLimit(ip: string): boolean {
   const now = Date.now();
