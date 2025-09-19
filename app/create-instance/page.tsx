@@ -3,6 +3,7 @@
 import Image from 'next/image';
 import { useState } from 'react';
 import '../styles/create-instance.css';
+import Link from "next/link";
 
 export default function CreateInstance() {
   const [isGenerating, setIsGenerating] = useState(false);
@@ -85,7 +86,7 @@ export default function CreateInstance() {
               </div>
               
               <div className="create-instance-back-link">
-                <a href="/">back to login</a>
+              <Link href="/">back to login</Link>
               </div>
             </>
           )}
