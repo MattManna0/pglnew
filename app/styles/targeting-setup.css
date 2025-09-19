@@ -121,6 +121,50 @@
   color: #1f2937;
 }
 
+.targeting-setup-two-stage-section {
+  margin-top: 2rem;
+  padding-top: 2rem;
+  border-top: 1px solid #e5e7eb;
+}
+
+.targeting-setup-two-stage-options {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.targeting-setup-two-stage-option {
+  background-color: #f9fafb;
+  border: 2px solid #e5e7eb;
+  border-radius: 0.5rem;
+  padding: 1rem 2rem;
+  cursor: pointer;
+  transition: all 0.15s ease-in-out;
+  text-align: center;
+  min-width: 6rem;
+}
+
+.targeting-setup-two-stage-option:hover {
+  border-color: #059669;
+  background-color: #f0fdf4;
+}
+
+.targeting-setup-two-stage-option.active {
+  border-color: #059669;
+  background-color: #d1fae5;
+}
+
+.targeting-setup-two-stage-option.active .targeting-setup-two-stage-text {
+  color: #065f46;
+}
+
+.targeting-setup-two-stage-text {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #1f2937;
+}
+
 .targeting-setup-auxiliary-section {
   margin-top: 3rem;
   padding-top: 2rem;

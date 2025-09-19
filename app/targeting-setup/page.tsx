@@ -6,6 +6,7 @@ import '../styles/targeting-setup.css';
 
 export default function TargetingSetup() {
   const [selectedUploader, setSelectedUploader] = useState<'me' | 'participants' | null>(null);
+  const [twoStageTargeting, setTwoStageTargeting] = useState<'yes' | 'no' | null>(null);
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [customGuidelines, setCustomGuidelines] = useState<string[]>(['']);
   const [requiredCategories, setRequiredCategories] = useState<string[]>([]);
@@ -35,6 +36,14 @@ export default function TargetingSetup() {
 
   const handleUploaderSelection = (uploader: 'me' | 'participants') => {
     setSelectedUploader(uploader);
+    // Reset two-stage targeting when switching uploader
+    if (uploader === 'me') {
+      setTwoStageTargeting(null);
+    }
+  };
+
+  const handleTwoStageSelection = (option: 'yes' | 'no') => {
+    setTwoStageTargeting(option);
   };
 
   const handleCategorySelection = (category: string) => {
@@ -142,6 +151,30 @@ export default function TargetingSetup() {
             </div>
           </div>
         </div>
+
+        {selectedUploader === 'participants' && (
+          <div className="targeting-setup-two-stage-section">
+            <h3 className="targeting-setup-question-title">
+              Do you require a two-stage targeting procedure, where a different set of targeting participants review the first set of targets?
+            </h3>
+            
+            <div className="targeting-setup-two-stage-options">
+              <div 
+                className={`targeting-setup-two-stage-option ${twoStageTargeting === 'yes' ? 'active' : ''}`}
+                onClick={() => handleTwoStageSelection('yes')}
+              >
+                <div className="targeting-setup-two-stage-text">Yes</div>
+              </div>
+              
+              <div 
+                className={`targeting-setup-two-stage-option ${twoStageTargeting === 'no' ? 'active' : ''}`}
+                onClick={() => handleTwoStageSelection('no')}
+              >
+                <div className="targeting-setup-two-stage-text">No</div>
+              </div>
+            </div>
+          </div>
+        )}
 
         <div className="targeting-setup-auxiliary-section">
           <h3 className="targeting-setup-question-title">
