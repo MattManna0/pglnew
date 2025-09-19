@@ -1,0 +1,7 @@
+- Always use TypeScript, never JavaScript.
+- When making frontends, always create a separate styles file. 
+- Make all functionalities deployment ready. Never use hard coded usernames or passwords. 
+- Always add reasonable cybersecurity functions, if necessary. 
+- Complete every task in as simple a manner as possible, with the shortest, most efficient code while accomplishing the task. 
+- Make all frontend changes compatable with different screen sizes.
+- Do not form summary documents. 

@@ -11,9 +11,14 @@ export default function AdminHome() {
     window.location.href = '/';
   };
 
+  const handleSectionClick = (section: string) => {
+    // Do nothing for now as requested
+    console.log(`Clicked on ${section} section`);
+  };
+
   return (
     <div className="admin-home-container">
-      <div className="admin-home-wrapper">
+      <div className="admin-home-header">
         <Image
           src="/greenleaf.png"
           alt="Green Leaf Logo"
@@ -34,6 +39,62 @@ export default function AdminHome() {
         >
           Logout
         </button>
+      </div>
+
+      <div className="admin-home-content">
+        <div className="admin-home-sections">
+          <div 
+            className="admin-home-section"
+            onClick={() => handleSectionClick('general-setup')}
+          >
+            <div className="admin-home-section-icon">
+              ⚙️
+            </div>
+            <h3 className="admin-home-section-title">General Setup</h3>
+            <p className="admin-home-section-description">
+              Configure system settings, application preferences, and basic configuration options.
+            </p>
+          </div>
+
+          <div 
+            className="admin-home-section"
+            onClick={() => handleSectionClick('manage-participants')}
+          >
+            <div className="admin-home-section-icon">
+              👥
+            </div>
+            <h3 className="admin-home-section-title">Manage Participants</h3>
+            <p className="admin-home-section-description">
+              View, edit, and manage participant applications and user accounts.
+            </p>
+          </div>
+
+          <div 
+            className="admin-home-section"
+            onClick={() => handleSectionClick('security')}
+          >
+            <div className="admin-home-section-icon">
+              🔒
+            </div>
+            <h3 className="admin-home-section-title">Security</h3>
+            <p className="admin-home-section-description">
+              Manage security settings, access controls, and authentication options.
+            </p>
+          </div>
+
+          <div 
+            className="admin-home-section"
+            onClick={() => handleSectionClick('data')}
+          >
+            <div className="admin-home-section-icon">
+              📊
+            </div>
+            <h3 className="admin-home-section-title">Data</h3>
+            <p className="admin-home-section-description">
+              Access data analytics, export information, and manage database operations.
+            </p>
+          </div>
+        </div>
       </div>
     </div>
   );
