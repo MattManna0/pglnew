@@ -1,11 +1,39 @@
 'use client';
 
 import Image from 'next/image';
+import { useState } from 'react';
 import '../styles/create-instance.css';
 
 export default function CreateInstance() {
-  const handleGenerateInstance = () => {
-    // Do nothing for now as requested
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [credentials, setCredentials] = useState<{username: string; password: string} | null>(null);
+  const [error, setError] = useState('');
+
+  const handleGenerateInstance = async () => {
+    setIsGenerating(true);
+    setError('');
+
+    try {
+      const response = await fetch('/api/create-instance', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({}),
+      });
+
+      const data = await response.json();
+
+      if (response.ok && data.success) {
+        setCredentials(data.credentials);
+      } else {
+        setError(data.error || 'Failed to create instance');
+      }
+    } catch {
+      setError('Network error. Please try again.');
+    } finally {
+      setIsGenerating(false);
+    }
   };
 
   return (
@@ -29,13 +57,38 @@ export default function CreateInstance() {
         </div>
 
         <div className="create-instance-content">
-          <button
-            onClick={handleGenerateInstance}
-            className="create-instance-button"
-            type="button"
-          >
-            Generate Instance
-          </button>
+          {!credentials ? (
+            <button
+              onClick={handleGenerateInstance}
+              disabled={isGenerating}
+              className="create-instance-button"
+              type="button"
+            >
+              {isGenerating ? 'Generating...' : 'Generate Instance'}
+            </button>
+          ) : (
+            <div className="create-instance-credentials">
+              <div className="create-instance-warning">
+                This is important. Write this down.
+              </div>
+              
+              <div className="create-instance-credential-item">
+                <div className="create-instance-credential-label">Username</div>
+                <div className="create-instance-credential-value">{credentials.username}</div>
+              </div>
+              
+              <div className="create-instance-credential-item">
+                <div className="create-instance-credential-label">Password</div>
+                <div className="create-instance-credential-value">{credentials.password}</div>
+              </div>
+            </div>
+          )}
+
+          {error && (
+            <div className="create-instance-message create-instance-message-error">
+              {error}
+            </div>
+          )}
         </div>
       </div>
     </div>
