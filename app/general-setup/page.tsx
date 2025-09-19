@@ -16,8 +16,12 @@ export default function GeneralSetup() {
   };
 
   const handleSectionClick = (section: string) => {
-    // Do nothing for now as requested
-    console.log(`Clicked on ${section} section`);
+    if (section === 'targeting') {
+      window.location.href = '/targeting-setup';
+    } else {
+      // Do nothing for other sections for now
+      console.log(`Clicked on ${section} section`);
+    }
   };
 
   return (
