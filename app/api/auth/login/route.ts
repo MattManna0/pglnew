@@ -14,21 +14,7 @@ const loginAttempts = new Map();
 const MAX_LOGIN_ATTEMPTS = 5;
 const LOCKOUT_DURATION = 15 * 60 * 1000; // 15 minutes
 
-// Simple user store (in production, use proper database)
-const users = new Map([
-  ['admin', '$2a$10$8K1p/a0dclxKDBqe7BHnNOxWl7BHVRVXjyW3VWRVXjyW3VWRVXjyWe'], // admin123
-  ['user', '$2a$10$8K1p/a0dclxKDBqe7BHnNOxWl7BHVRVXjyW3VWRVXjyW3VWRVXjyWu']   // password123
-]);
-
-// Initialize user passwords on first request (better approach)
-let usersInitialized = false;
-async function initializeUsers() {
-  if (!usersInitialized) {
-    users.set('admin', await bcrypt.hash('admin123', 10));
-    users.set('user', await bcrypt.hash('password123', 10));
-    usersInitialized = true;
-  }
-}
+// All authentication now handled via MongoDB
 
 function checkRateLimit(ip: string): { allowed: boolean; attemptsLeft: number } {
   const now = Date.now();
@@ -151,52 +137,41 @@ export async function POST(request: NextRequest) {
     // Simulate processing delay to prevent timing attacks
     const startTime = Date.now();
     
+    // Check credentials from MongoDB
+    const mongoUrl = process.env.MONGO_LOGIN;
+    const mongoDatabase = process.env.MONGO_DATABASE;
+    const mongoCollection = process.env.MONGO_COLLECTION;
+
+    if (!mongoUrl || !mongoDatabase || !mongoCollection) {
+      console.error('MongoDB environment variables not set');
+      return NextResponse.json(
+        { error: 'Server configuration error' },
+        { status: 500 }
+      );
+    }
+
+    const client = new MongoClient(mongoUrl);
     let isValid = false;
+    
+    try {
+      await client.connect();
+      const db = client.db(mongoDatabase);
+      const collection = db.collection(mongoCollection);
 
-    if (role === 'admin') {
-      // Check admin credentials from MongoDB
-      const mongoUrl = process.env.MONGO_LOGIN;
-      const mongoDatabase = process.env.MONGO_DATABASE;
-      const mongoCollection = process.env.MONGO_COLLECTION;
-
-      if (!mongoUrl || !mongoDatabase || !mongoCollection) {
-        console.error('MongoDB environment variables not set');
-        return NextResponse.json(
-          { error: 'Server configuration error' },
-          { status: 500 }
-        );
-      }
-
-      const client = new MongoClient(mongoUrl);
+      // Find user by username and role type
+      const user = await collection.findOne({ 
+        username, 
+        type: role === 'admin' ? 'admin' : role 
+      });
       
-      try {
-        await client.connect();
-        const db = client.db(mongoDatabase);
-        const collection = db.collection(mongoCollection);
-
-        // Find admin user
-        const adminUser = await collection.findOne({ username, type: 'admin' });
-        
-        if (adminUser && adminUser.password) {
-          isValid = await bcrypt.compare(password, adminUser.password);
-        } else {
-          // Perform dummy hash comparison to prevent username enumeration
-          await bcrypt.compare(password, '$2a$10$dummy.hash.to.prevent.timing.attacks');
-        }
-      } finally {
-        await client.close();
-      }
-    } else {
-      // For other roles, use the hardcoded users (fallback)
-      await initializeUsers();
-      const hashedPassword = users.get(username);
-      
-      if (hashedPassword) {
-        isValid = await bcrypt.compare(password, hashedPassword);
+      if (user && user.password) {
+        isValid = await bcrypt.compare(password, user.password);
       } else {
         // Perform dummy hash comparison to prevent username enumeration
         await bcrypt.compare(password, '$2a$10$dummy.hash.to.prevent.timing.attacks');
       }
+    } finally {
+      await client.close();
     }
 
     // Ensure minimum processing time (prevent timing attacks)

@@ -142,13 +142,17 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Get MongoDB database and collection from environment
+    const mongoDatabase = process.env.MONGO_DATABASE;
+    const mongoCollectionName = process.env.MONGO_APPLICATIONS_COLLECTION;
+
     // Connect to MongoDB
     const client = new MongoClient(mongoUrl);
     
     try {
       await client.connect();
-      const db = client.db('leafWeb');
-      const collection = db.collection('applications');
+      const db = client.db(mongoDatabase);
+      const collection = db.collection(mongoCollectionName);
 
       // Check for duplicate email (basic duplicate prevention)
       const existingApplication = await collection.findOne({ email: validatedData.email });
