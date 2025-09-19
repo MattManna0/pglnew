@@ -1,46 +1,39 @@
+'use client';
+
 import Image from 'next/image';
+import '../styles/admin-home.css';
 
 export default function AdminHome() {
+  const handleLogout = () => {
+    // Clear session cookie
+    document.cookie = 'session=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; SameSite=Strict';
+    // Redirect to login
+    window.location.href = '/';
+  };
+
   return (
-    <div style={{
-      minHeight: '100vh',
-      background: 'linear-gradient(to bottom, #f0fdf4, #ffffff)',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      padding: '1rem'
-    }}>
-      <div style={{
-        maxWidth: '28rem',
-        width: '100%',
-        backgroundColor: '#ffffff',
-        borderRadius: '0.5rem',
-        boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
-        padding: '2rem',
-        textAlign: 'center'
-      }}>
+    <div className="admin-home-container">
+      <div className="admin-home-wrapper">
         <Image
           src="/greenleaf.png"
           alt="Green Leaf Logo"
           width={80}
           height={80}
-          style={{ margin: '0 auto 1rem' }}
+          className="admin-home-logo"
           priority
         />
-        <h1 style={{
-          fontSize: '1.875rem',
-          fontWeight: '700',
-          color: '#1f2937',
-          marginBottom: '0.5rem'
-        }}>
+        <h1 className="admin-home-title">
           Admin Home
         </h1>
-        <h2 style={{
-          fontSize: '0.875rem',
-          color: '#4b5563'
-        }}>
+        <h2 className="admin-home-subtitle">
           Welcome to Project Green Leaf Admin Panel
         </h2>
+        <button
+          onClick={handleLogout}
+          className="admin-home-logout-button"
+        >
+          Logout
+        </button>
       </div>
     </div>
   );
