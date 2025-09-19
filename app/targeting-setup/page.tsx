@@ -8,12 +8,19 @@ export default function TargetingSetup() {
   const [selectedUploader, setSelectedUploader] = useState<'me' | 'participants' | null>(null);
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [customGuidelines, setCustomGuidelines] = useState<string[]>(['']);
+  const [requiredCategories, setRequiredCategories] = useState<string[]>([]);
+  const [requiredGuidelines, setRequiredGuidelines] = useState<boolean[]>([false]);
   const [startDate, setStartDate] = useState('');
   const [startTime, setStartTime] = useState('');
   const [startTimezone, setStartTimezone] = useState('');
   const [endDate, setEndDate] = useState('');
   const [endTime, setEndTime] = useState('');
   const [endTimezone, setEndTimezone] = useState('');
+
+  // Get current date and time for minimum values
+  const now = new Date();
+  const currentDate = now.toISOString().split('T')[0]; // YYYY-MM-DD format
+  const currentTime = now.toTimeString().slice(0, 5); // HH:MM format
 
   const handleLogout = () => {
     // Clear session cookie
@@ -52,15 +59,31 @@ export default function TargetingSetup() {
     );
   };
 
+  const handleRequiredCategoryToggle = (category: string) => {
+    setRequiredCategories(prev => 
+      prev.includes(category)
+        ? prev.filter(c => c !== category)
+        : [...prev, category]
+    );
+  };
+
+  const handleRequiredGuidelineToggle = (index: number) => {
+    setRequiredGuidelines(prev => 
+      prev.map((required, i) => i === index ? !required : required)
+    );
+  };
+
   const addCustomGuideline = () => {
     if (customGuidelines.length < 30) {
       setCustomGuidelines(prev => [...prev, '']);
+      setRequiredGuidelines(prev => [...prev, false]);
     }
   };
 
   const removeCustomGuideline = (index: number) => {
     if (customGuidelines.length > 1) {
       setCustomGuidelines(prev => prev.filter((_, i) => i !== index));
+      setRequiredGuidelines(prev => prev.filter((_, i) => i !== index));
     }
   };
 
@@ -138,6 +161,20 @@ export default function TargetingSetup() {
                 <div className="targeting-setup-auxiliary-text">
                   {category.charAt(0).toUpperCase() + category.slice(1)}
                 </div>
+                {selectedCategories.includes(category) && category !== 'custom guideline' && (
+                  <div className="targeting-setup-required-section">
+                    <span className="targeting-setup-required-text">Required</span>
+                    <div 
+                      className={`targeting-setup-required-checkbox ${requiredCategories.includes(category) ? 'checked' : ''}`}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleRequiredCategoryToggle(category);
+                      }}
+                    >
+                      {requiredCategories.includes(category) && '✓'}
+                    </div>
+                  </div>
+                )}
               </div>
             ))}
           </div>
@@ -146,14 +183,25 @@ export default function TargetingSetup() {
             <div className="targeting-setup-custom-guidelines">
               {customGuidelines.map((guideline, index) => (
                 <div key={index} className="targeting-setup-custom-guideline">
-                  <input
-                    type="text"
-                    value={guideline}
-                    onChange={(e) => handleCustomGuidelineChange(index, e.target.value)}
-                    placeholder={`Example: The image should not contain any faces or readable text.`}
-                    className="targeting-setup-custom-input"
-                    maxLength={200}
-                  />
+                  <div className="targeting-setup-custom-input-wrapper">
+                    <input
+                      type="text"
+                      value={guideline}
+                      onChange={(e) => handleCustomGuidelineChange(index, e.target.value)}
+                      placeholder={`Example: The image should not contain any faces or readable text.`}
+                      className="targeting-setup-custom-input"
+                      maxLength={200}
+                    />
+                    <div className="targeting-setup-custom-required-section">
+                      <span className="targeting-setup-custom-required-text">Required</span>
+                      <div 
+                        className={`targeting-setup-custom-required-checkbox ${requiredGuidelines[index] ? 'checked' : ''}`}
+                        onClick={() => handleRequiredGuidelineToggle(index)}
+                      >
+                        {requiredGuidelines[index] && '✓'}
+                      </div>
+                    </div>
+                  </div>
                   {customGuidelines.length > 1 && (
                     <button
                       onClick={() => removeCustomGuideline(index)}
@@ -181,7 +229,7 @@ export default function TargetingSetup() {
             When will the targeting phase start and end?
           </h3>
           <p className="targeting-setup-timing-warning">
-            You will not be able to modify this after the targeting phase starts. Please choose wisely.
+            Targets cannot be added before or after this timeframe.
           </p>
           
           <div className="targeting-setup-timing-container">
@@ -194,6 +242,7 @@ export default function TargetingSetup() {
                     type="date"
                     value={startDate}
                     onChange={(e) => setStartDate(e.target.value)}
+                    min={currentDate}
                     className="targeting-setup-timing-input"
                   />
                 </div>
@@ -203,6 +252,7 @@ export default function TargetingSetup() {
                     type="time"
                     value={startTime}
                     onChange={(e) => setStartTime(e.target.value)}
+                    min={startDate === currentDate ? currentTime : undefined}
                     className="targeting-setup-timing-input"
                   />
                 </div>
