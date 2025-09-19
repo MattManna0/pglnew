@@ -31,8 +31,16 @@ function rateLimit(ip: string): boolean {
   return true;
 }
 
-// Input validation and sanitization
-function validateAndSanitizeInput(data: unknown) {
+// Request size limits (bytes)
+const MAX_REQUEST_SIZE = 1024; // 1KB - sufficient for form data
+const MAX_FIELD_LENGTH = {
+  name: 100,
+  email: 100,
+  phone: 20
+};
+
+// Input validation (no XSS sanitization - handle on render)
+function validateInput(data: unknown) {
   if (!data || typeof data !== 'object') {
     throw new Error('Invalid input data');
   }
@@ -50,36 +58,47 @@ function validateAndSanitizeInput(data: unknown) {
   }
 
   // Length validation
-  if (name.length > 100 || email.length > 100 || phone.length > 20) {
+  if (name.length > MAX_FIELD_LENGTH.name || 
+      email.length > MAX_FIELD_LENGTH.email || 
+      phone.length > MAX_FIELD_LENGTH.phone) {
     throw new Error('Field length exceeds maximum allowed');
   }
 
-  // Sanitize inputs (remove potential script tags and normalize)
-  const sanitizedName = name.trim().replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '');
-  const sanitizedEmail = email.trim().toLowerCase();
-  const sanitizedPhone = phone.trim().replace(/[^\d\+\-\s\(\)]/g, '');
+  // Basic normalization (trim whitespace, normalize email case)
+  const normalizedName = name.trim();
+  const normalizedEmail = email.trim().toLowerCase();
+  const normalizedPhone = phone.trim();
 
   // Email validation
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (!emailRegex.test(sanitizedEmail)) {
+  if (!emailRegex.test(normalizedEmail)) {
     throw new Error('Invalid email format');
   }
 
-  // Phone validation
-  const phoneRegex = /^[\+]?[1-9][\d]{0,15}$/;
-  if (!phoneRegex.test(sanitizedPhone.replace(/[\s\-\(\)]/g, ''))) {
+  // Phone validation (basic format check)
+  const phoneRegex = /^[\+]?[1-9][\d\s\-\(\)]{0,19}$/;
+  if (!phoneRegex.test(normalizedPhone)) {
     throw new Error('Invalid phone number format');
   }
 
   return {
-    name: sanitizedName,
-    email: sanitizedEmail,
-    phone: sanitizedPhone
+    name: normalizedName,
+    email: normalizedEmail,
+    phone: normalizedPhone
   };
 }
 
 export async function POST(request: NextRequest) {
   try {
+    // Check request size limit
+    const contentLength = request.headers.get('content-length');
+    if (contentLength && parseInt(contentLength) > MAX_REQUEST_SIZE) {
+      return NextResponse.json(
+        { error: 'Request payload too large' },
+        { status: 413 }
+      );
+    }
+
     // Get client IP for rate limiting
     const ip = request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || 'unknown';
     
@@ -91,9 +110,27 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Parse and validate request body
-    const body = await request.json();
-    const validatedData = validateAndSanitizeInput(body);
+    // Parse request body with size validation
+    const rawBody = await request.text();
+    if (rawBody.length > MAX_REQUEST_SIZE) {
+      return NextResponse.json(
+        { error: 'Request payload too large' },
+        { status: 413 }
+      );
+    }
+
+    // Parse JSON and validate input
+    let body;
+    try {
+      body = JSON.parse(rawBody);
+    } catch {
+      return NextResponse.json(
+        { error: 'Invalid JSON format' },
+        { status: 400 }
+      );
+    }
+
+    const validatedData = validateInput(body);
 
     // Get MongoDB connection string from environment
     const mongoUrl = process.env.MONGO_LOGIN;
